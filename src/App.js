@@ -2,9 +2,7 @@ import { Routes, Route, useNavigate  } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 
-import Header from './components/header/Header';
-import Nav from './components/nav/Nav';
-import Footer from './components/footer/Footer';
+import Layout from './components/layout/Layout';
 import Home from './components/home/Home';
 import NewPost from './components/newpost/NewPost';
 import PostPage from './components/postpage/PostPage';
@@ -64,36 +62,40 @@ function App() {
     setPosts(allPosts);
     setPostTitle('');
     setPostBody('');
-    navigate.push('/');
+    navigate('/');
   }
   
   const handleDelete = (id) => {
     const postsList = posts.filter(post => post.id !== id);
     setPosts(postsList);
-    navigate.push('/');
+    navigate('/');
   }
 
   return (
-    <div className="App">
-      <Header title="React JS Blog" />
-      <Nav search={search} setSearch={setSearch} />
-      <Routes>
-        <Route path="/" element={<Home posts={searchResults} />} />
-        <Route path="/post" element={<NewPost 
-          handleSubmit={handleSubmit} 
-          postTitle={postTitle} 
-          setPostTitle={setPostTitle}
-          postBody={postBody}
-          setPostBody={setPostBody} 
-          />} 
-        />
-        <Route path="/post/:id" element={<PostPage posts={posts} handleDelete={handleDelete} />} /> 
-        <Route path="/about" element={<About />} />
+    <Routes>
+      <Route path="/" element={<Layout 
+        search={search}
+        setSearch={setSearch}
+      />}>
+        <Route index element={<Home posts={searchResults} />} />
+        <Route path="post"> 
+          <Route index element={<NewPost 
+            handleSubmit={handleSubmit} 
+            postTitle={postTitle} 
+            setPostTitle={setPostTitle}
+            postBody={postBody}
+            setPostBody={setPostBody} 
+          />} />
+          <Route path="/post/:id" element={<PostPage 
+            posts={posts} 
+            handleDelete={handleDelete} 
+          />} />
+        </Route> 
+        <Route path="about" element={<About />} />
         <Route path="*" element={<Missing />} />
-      </Routes>
-      <Footer />
-    </div>
+      </Route>  
+    </Routes>
   );
 }
 
-export default App;
+export default App;    
